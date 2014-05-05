@@ -1,0 +1,38 @@
+\name{parse.total.popn.size}
+\alias{parse.total.popn.size}
+\title{handle the total.popn.size argument in a uniform way across
+several functions}
+\usage{
+  parse.total.popn.size(total.popn.size, survey.data,
+    verbose = FALSE)
+}
+\arguments{
+  \item{total.popn.size}{value to parse}
+
+  \item{survey.data}{the dataframe we're analyzing, which
+  may or may not have an attribute called
+  'total.popn.size'}
+
+  \item{verbose}{if TRUE, print messages to the screen}
+}
+\value{
+  the parsed total population size
+}
+\description{
+  handle the total.popn.size argument in a uniform way
+  across several functions, including
+  \code{\link{kp.degree.estimator}},
+  \code{\link{nsum.internal.validation}}, and
+  \code{\link{nsum.estimator}}.
+}
+\details{
+  The result depends upon the value that was passed in:
+  \itemize{ \item NA if total.popn.size is NA then work
+  with proportions \item NULL if total.popn.size is NULL
+  (nothing passed in), then assume that there's a
+  total.popn.size attribute associated with the dataset
+  we're using \item numerical value if an actual
+  total.popn.size was passed in, }
+}
+\keyword{internal}
+

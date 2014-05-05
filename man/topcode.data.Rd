@@ -1,0 +1,39 @@
+\name{topcode.data}
+\alias{topcode.data}
+\title{topcode a group of variables}
+\usage{
+  topcode.data(survey.data, vars, max, to.na = NULL,
+    ignore = NA)
+}
+\arguments{
+  \item{survey.data}{the dataset with the survey responses}
+
+  \item{vars}{a vector with the names or indices of the
+  columns in the dataframe that are to be topcoded}
+
+  \item{max}{the maximum value; all values > max are
+  recoded to max}
+
+  \item{ignore}{a vector of values to leave unchanged}
+
+  \item{to.na}{a vector of values to recode to NA (this
+  happens before topcoding)}
+}
+\value{
+  the topcoded vector
+}
+\description{
+  this function uses \code{topcode.var} to topcode a set of
+  variables. it's useful for topcoding a whole set of
+  aggregated relational data ("how many X are you connected
+  to?") questions in the same way.
+}
+\examples{
+\dontrun{
+   data(hh.survey) # example data included with the package
+   example.survey <- topcode.data(example.survey,
+                                  vars=known.popn.vars,
+                                  max=30)
+}
+}
+
