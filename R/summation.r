@@ -5,13 +5,12 @@
 ## degrees
 
 #####################################################
-##' summation.degree.estimator
+##' summation.estimator
 ##'
 ##' compute an estimate of the respondents' degrees using
-##' the summation method (McCarty et al 2001)
+##' the summation method
 ##'
-##' This is the method first described in McCarty et al 2001,
-##' "Comparing two methods for estimating network size"
+##' TODO -- cite summation method ref
 ##'
 ##' Note that the summation degree estimator for the
 ##' case where there is missing data is not yet implemented.
@@ -32,12 +31,10 @@
 ##'         missingness in the summation questions will be set
 ##'         to NA
 ##' @export
-summation.degree.estimator <- function(survey.data,
-                                       sum.q=NULL,
-                                       missing="ignore")
+summation.estimator <- function(survey.data,
+                                sum.q=NULL,
+                                missing="ignore")
 {
-
-  # TODO -- turn text cite above into actual cite
 
   if (is.null(sum.q)) {
     sum.q <- attr(survey.data, "sum.q")
@@ -49,7 +46,7 @@ summation.degree.estimator <- function(survey.data,
   if (missing != "ignore") {
 
     ## TODO -- FILL THIS IN
-    stop("this is not implemented for the case where missing != 'ignore'.\n")
+    stop("this is not yet implemented.\n")
 
   } else {
 

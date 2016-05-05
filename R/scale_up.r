@@ -19,12 +19,14 @@
 #####################################################
 ##' total.degree
 ##'
-##' Estimate the total degree of the population network
+##' estimate the total degree of the population network
 ##' from sample degrees
 ##'
-##' This computes the weighted sum of the respondents'
-##' estimated degrees. For now, this function doesn't worry about missing values
-##' OR about differences between the frame and the universe.
+##' this computes the weighted sum of the respondents'
+##' estimated degrees.\cr
+##''
+##' TODO -- for now, it doesn't worry about missing values
+##' OR about differences between the frame and the universe
 ##'
 ##' @param survey.data the dataframe with survey results
 ##' @param d.hat.vals the name or index of the column that contains
@@ -41,35 +43,19 @@
 ##'                must be taken in using this second option
 ##' @return the estimated total degree
 ##' @export
-##' @examples
-##'  data(hhsurvey)
-##'  kp.vec <- df.to.kpvec(knownpop.dat, kp.var='known.popn', kp.value='size')
-##'  example.survey <- add.kp(example.survey, kp.vec)
-##'  d.hat <- kp.degree.estimator(example.survey,
-##'                               missing="complete.obs",
-##'                               total.popn.size=NA)
-##'  example.survey$d.hat <- d.hat
-##'  tot.d.hat <- total.degree.estimator(example.survey,
-##'                                      d.hat.vals="d.hat",
-##'                                      weights="indweight",
-##'                                      missing="complete.obs")
-##'  
 total.degree.estimator <- function(survey.data,
                                    d.hat.vals="d",
                                    weights=NULL,
                                    missing="ignore")
 {
-  ## TODO -- for now, total.degree doesn't worry about
-  ##         missing values or about differences between the
-  ##         frame and the universe
 
   ## get the weights;
   ## weights will default to 1 for everyone, unless the user specified
   ## a weights variable
-  weights <- get.weights(survey.data, weights)
+  weights <- surveybootstrap:::get.weights(survey.data, weights)
 
   ## get the estimated degrees
-  d.hat.vals <- get.var(survey.data, d.hat.vals)
+  d.hat.vals <- surveybootstrap:::get.var(survey.data, d.hat.vals)
 
   if (missing == 'complete.obs') {
     touse <- which(! is.na(d.hat.vals))
@@ -91,8 +77,10 @@ total.degree.estimator <- function(survey.data,
 ##' compute network scale-up (nsum) estimate of the
 ##' hidden population's size. if the degree ratio
 ##' and information transmission rate are both 1
-##' (the defaults), this is the Killworth estimator
-##' (Killworth et al 1998, "A social network approach...")
+##' (the defaults), this is the Killworth estimator.
+##'
+##' TODO -- cite Killworth estimator, our methods paper
+##' TODO -- add refs to deg ratio and tx rate stuff...
 ##'
 ##' @param survey.data the dataframe with survey results
 ##' @param d.hat.vals the name or index of the column that contains
@@ -119,20 +107,6 @@ total.degree.estimator <- function(survey.data,
 ##' @return the nsum estimate of the hidden population's size (as a prevalence or
 ##'         an absolute number, depending on total.popn.size)
 ##' @export
-##' @examples
-##'  data(hhsurvey)
-##'  kp.vec <- df.to.kpvec(knownpop.dat, kp.var='known.popn', kp.value='size')
-##'  example.survey <- add.kp(example.survey, kp.vec)
-##'  d.hat <- kp.degree.estimator(example.survey,
-##'                               missing="complete.obs",
-##'                               total.popn.size=10e6)
-##'  example.survey$d.hat <- d.hat
-##'  sw.estimate <- nsum.estimator(example.survey,
-##'                                d.hat.vals="d.hat",
-##'                                y.vals="sex.workers",
-##'                                weights="indweight",
-##'                                missing="complete.obs",
-##'                                total.popn.size=10e6)
 nsum.estimator <- function(survey.data,
                            d.hat.vals="d",
                            y.vals="y",
@@ -145,7 +119,6 @@ nsum.estimator <- function(survey.data,
                            verbose=FALSE,
                            ...)
 {
-  ## TODO -- eventually, add refs to our new methods paper
 
   if (! missing %in% c("ignore", "complete.obs")) {
     stop("error in specifying procedure for handling missing values in nsum.estimator. invalid option.\n")
@@ -158,11 +131,11 @@ nsum.estimator <- function(survey.data,
   ## get the weights;
   ## weights will default to 1 for everyone, unless the user specified
   ## a weights variable
-  weights <- get.weights(survey.data, weights)
+  weights <- surveybootstrap:::get.weights(survey.data, weights)
 
-  raw.d.hat.vals <- get.var(survey.data, d.hat.vals)
+  raw.d.hat.vals <- surveybootstrap:::get.var(survey.data, d.hat.vals)
 
-  raw.y.vals <- get.var(survey.data, y.vals)
+  raw.y.vals <- surveybootstrap:::get.var(survey.data, y.vals)
 
   #### compute the actual estimates
   y.vals <- raw.y.vals * weights
@@ -248,6 +221,10 @@ nsum.estimator <- function(survey.data,
 ##' size of the known population, and comparing the result
 ##' to the actual size of the known population
 ##'
+##' TODO -- document bootstrap ci option better
+##' TODO -- add example of usage to the comments...\cr
+##' TODO -- make amenable to parallelization
+##'
 ##' @param survey.data the dataframe with the survey results
 ##' @param known.popns if not NULL, a vector whose entries are the size of the known
 ##'                    populations, and whose names are the variable names in the dataset
@@ -277,8 +254,7 @@ nsum.estimator <- function(survey.data,
 ##'                the variable with the appropriate weights. these weights
 ##'                should be construted so that, eg, the mean of the degrees is
 ##'                estimated as (1/n) * \\sum_i {w_i * d_i}
-##' @param killworth.se if TRUE, return the Killworth et al estimate
-##of the standard error
+##' @param killworth.se if TRUE, return the Killworth et al estimate of the standard error
 ##' @param return.plot if TRUE, make and return a ggplot2 plot object
 ##' @param verbose if TRUE, report more detailed information about what's going on
 ##' @param bootstrap if TRUE, use \code{bootstrap.estimates} to take bootstrap resamples
@@ -305,10 +281,6 @@ nsum.internal.validation <- function(survey.data,
                                      bootstrap=FALSE,
                                      ...)
 {
-
-  ## TODO -- document bootstrap ci option better
-  ## TODO -- add example of usage to the comments...\cr
-  ## TODO -- make amenable to parallelization
 
   if (! missing %in% c("ignore", "complete.obs")) {
     stop("error in specifying procedure for handling missing values in nsum.internal.validation. invalid option.\n")
@@ -339,15 +311,12 @@ nsum.internal.validation <- function(survey.data,
                                            survey.data,
                                            verbose=verbose)
 
-  known.size <- NULL
-  nsum.holdout.est <- NULL
-
   ## go through each known population...
-  res.all <- llply(names(known.popns),
+  res.all <- plyr::llply(names(known.popns),
 
                function(this.kp) {
 
-                 vcat(verbose, "staring known popn: ", this.kp)
+                 surveybootstrap:::vcat(verbose, "staring known popn: ", this.kp)
 
                  known.size <- known.popns[this.kp]
 
@@ -387,8 +356,8 @@ nsum.internal.validation <- function(survey.data,
                  ## dataframe; this is useful because if we take
                  ## bootstrap samples below, we only have to worry about
                  ## the dataset and not other, parallel, vectors
-                 thisdat$y.val.minus <- get.var(survey.data, this.kp)
-                 thisdat$weights.minus <- get.weights(survey.data, weights)
+                 thisdat$y.val.minus <- surveybootstrap:::get.var(survey.data, this.kp)
+                 thisdat$weights.minus <- surveybootstrap:::get.weights(survey.data, weights)
 
                  ## build up a call to nsum.estimator
                  ## (we do this rather than just calling directly
@@ -442,8 +411,8 @@ nsum.internal.validation <- function(survey.data,
                                           boot.args))
                    boot.res <- eval(boot.call)
 
-                   boot.res.ests <- laply(boot.res, function(x) { x$estimate })
-                   boot.res.d.hat.sum <- laply(boot.res,
+                   boot.res.ests <- plyr::laply(boot.res, function(x) { x$estimate })
+                   boot.res.d.hat.sum <- plyr::laply(boot.res,
                                                function(x) { x$sum.d.hat })
                  } else {
                    boot.res.ests <- NULL
@@ -462,7 +431,7 @@ nsum.internal.validation <- function(survey.data,
 
                })
 
-  res <- ldply(res.all,
+  res <- plyr::ldply(res.all,
                function(x) { x$data })
 
   res.boot <- NULL
@@ -470,16 +439,16 @@ nsum.internal.validation <- function(survey.data,
   res.boot.d <- NULL
 
   if (bootstrap) {
-    res.boot <- llply(res.all,
+    res.boot <- plyr::llply(res.all,
                       function(x) {
                         x$boot$values
                       })
-    res.boot.d <- llply(res.all,
+    res.boot.d <- plyr::llply(res.all,
                         function(x) {
                           x$boot$d.hat.sum
                         })
-    names(res.boot) <- llply(res.all, function(x) { x$boot$name })
-    names(res.boot.d) <- llply(res.all, function(x) { x$boot$name })
+    names(res.boot) <- plyr::llply(res.all, function(x) { x$boot$name })
+    names(res.boot.d) <- plyr::llply(res.all, function(x) { x$boot$name })
 
   }
 
@@ -495,8 +464,10 @@ nsum.internal.validation <- function(survey.data,
 
   if(return.plot) {
 
-    # to propitiate R CMD CHECK
+    ## to placate R CMD CHECK
     name <- NULL
+    known.size <- NULL
+    nsum.holdout.est <-  NULL
 
     iv.plot <- ggplot(res) +
                geom_text(aes(x=known.size, y=nsum.holdout.est, label=name),
@@ -528,10 +499,12 @@ nsum.internal.validation <- function(survey.data,
 }
 
 #####################################################
-##' compare.mean.ties.truth
+##' plot_meanties_truth
 ##'
 ##' plot the relationship between the mean number of
 ##' ties in the survey dataset and the true popn sizes
+##'
+##' TODO - more in-depth description of this function
 ##'
 ##' @param survey.data the dataframe with the survey results
 ##' @param known.popns if not NULL, a vector whose entries are the
@@ -546,15 +519,8 @@ nsum.internal.validation <- function(survey.data,
 ##'                is estimated as (1/n) * \\sum_i {w_i * d_i}
 ##' @return a ggplot2 object with the relationship plot
 ##' @export
-compare.mean.ties.truth <- function(survey.data, weights=NULL, known.popns=NULL)
+plot_meanties_truth <- function(survey.data, weights=NULL, known.popns=NULL)
 {
-
-  # TODO - more in-depth description of this function in docs above
-
-  ## these are strictly to propitiate R CMD CHECK; see, for example, 
-  # http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
-  truth <- NULL
-  name <- NULL
 
   if (is.null(known.popns)) {
     known.popns <- attr(survey.data, "known.popns")
@@ -562,7 +528,7 @@ compare.mean.ties.truth <- function(survey.data, weights=NULL, known.popns=NULL)
 
   ## weights will default to 1 for everyone, unless the user specified
   ## a weights variable
-  weights <- get.weights(survey.data, weights)
+  weights <- surveybootstrap:::get.weights(survey.data, weights)
 
   ard.q <- subset(survey.data, select=names(known.popns))
 
@@ -573,6 +539,10 @@ compare.mean.ties.truth <- function(survey.data, weights=NULL, known.popns=NULL)
   colnames(res)[2] <- "truth"
   res <- data.frame(res)
   res$name <- rownames(res)
+
+  ## to placate R CMD CHECK
+  truth <- NULL
+  name <- NULL
 
   resplot <- ggplot(res) +
              geom_text(aes(x=truth, y=ard.means,label=name), size=4) +

@@ -25,15 +25,13 @@
 ##' @param survey.data the dataframe with the survey results
 ##' @param mult.col the name or index of the column that contains, for each
 ##'             respondent, the individual value of the number known divided
-##'             by the sum of the multiplicities 
+##'             by the sum of the multiplicities (TODO MORE DETAIL)
 ##' @return the multiplicity estimate of the hidden
 ##'         population's size (as a prevalence)
 ##' @export
 multiplicity.estimator <- function(survey.data,
                                    mult.col="mult")
 {
-
-  # TODO -- more detail in description of mult.col param
 
   mult.vals <- try(subset(survey.data,
                           select=mult.col),
@@ -64,31 +62,26 @@ multiplicity.estimator <- function(survey.data,
 ##' @param survey.data the dataframe with the survey results
 ##' @param gwsm.col the name or index of the column that contains, for each
 ##'             respondent, the individual value of the number known divided
-##'             by the sum of the multiplicities 
+##'             by the sum of the multiplicities (TODO MORE DETAIL)
 ##' @return the multiplicity estimate of the hidden
 ##'         population's size (as a prevalence)
+##' @export
 gwsm.estimator <- function(survey.data,
                            gwsm.col="mult")
 {
-  # TODO -- once this is written, be sure to @export it
-  # TODO -- more detail in description of gwsm.col param
 
   stop("gwsm.estimator is not yet implemented.")
   
   ## TODO -- this is just a skeleton; the stuff below has not
   ## been edited yet. think about the best way to set this up
   mult.vals <- try(subset(survey.data,
-                          select=mult.col),
+                          select=gwsm.col),
                    silent=TRUE)
-
-  # just to propitiate R CMD CHECK; see
-  # http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
-  mult.col <- NULL
 
   if( inherits(mult.vals, "try-error") ||
       ncol(mult.vals) != 1 ||
       ! is.numeric(mult.vals[,1]) ) {
-    stop(paste(mult.col,
+    stop(paste(gwsm.col,
                "does not identify a valid column for computing multiplicities.\n"))
   }
 

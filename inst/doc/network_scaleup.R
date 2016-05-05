@@ -1,5 +1,4 @@
-
-## ----, message=FALSE-----------------------------------------------------
+## ---- message=FALSE------------------------------------------------------
 library(networkreporting)
 library(plyr)
 library(ggplot2) # we'll use qplot from ggplot2 for plots
@@ -7,25 +6,20 @@ theme_set(theme_minimal())
 
 data(hhsurvey) # this is a demo dataset included with the package
 
-
 ## ------------------------------------------------------------------------
 knownpop.dat
-
 
 ## ------------------------------------------------------------------------
 kp.vec <- df.to.kpvec(knownpop.dat, kp.var="known.popn", kp.value="size")
 
 kp.vec
 
-
 ## ------------------------------------------------------------------------
 # total size of the population
 tot.pop.size <- 10e6
 
-
 ## ------------------------------------------------------------------------
 head(example.survey)
-
 
 ## ------------------------------------------------------------------------
 ## make a vector with the list of known population names from
@@ -35,7 +29,6 @@ known.popn.vars <- paste(knownpop.dat$known.popn)
 ## before topcoding: max. response for several popns is > 30
 summary(example.survey[,known.popn.vars])
 
-
 ## ------------------------------------------------------------------------
 example.survey <- topcode.data(example.survey,
                                vars=known.popn.vars,
@@ -44,8 +37,7 @@ example.survey <- topcode.data(example.survey,
 ## after topcoding: max. response for all popns is 30
 summary(example.survey[,known.popn.vars])
 
-
-## ----, tidy=FALSE--------------------------------------------------------
+## ---- tidy=FALSE---------------------------------------------------------
 d.hat <- kp.degree.estimator(survey.data=example.survey,
                              known.popns=kp.vec,
                              total.popn.size=tot.pop.size,
@@ -53,16 +45,13 @@ d.hat <- kp.degree.estimator(survey.data=example.survey,
 
 summary(d.hat)
 
-
 ## ------------------------------------------------------------------------
 qplot(d.hat, binwidth=25)
-
 
 ## ------------------------------------------------------------------------
 example.survey$d.hat <- d.hat
 
-
-## ----, tidy=FALSE--------------------------------------------------------
+## ---- tidy=FALSE---------------------------------------------------------
 iv.result <- nsum.internal.validation(survey.data=example.survey,
                                       known.popns=kp.vec,
                                       missing="complete.obs",
@@ -71,32 +60,26 @@ iv.result <- nsum.internal.validation(survey.data=example.survey,
                                       kp.method=TRUE,
                                       return.plot=TRUE)
 
-
 ## ------------------------------------------------------------------------
 iv.result$results
-
 
 ## ------------------------------------------------------------------------
 print(iv.result$plot)
 
-
 ## ------------------------------------------------------------------------
 print(iv.result$plot + ggtitle("internal validation checks"))
 
-
-## ----, tidy=FALSE--------------------------------------------------------
+## ---- tidy=FALSE---------------------------------------------------------
 idu.est <- nsum.estimator(survey.data=example.survey,
                           d.hat.vals=d.hat,
                           total.popn.size=tot.pop.size,
                           y.vals="idu",
                           missing="complete.obs")
 
-
 ## ------------------------------------------------------------------------
 idu.est
 
-
-## ----, tidy=FALSE--------------------------------------------------------
+## ---- tidy=FALSE---------------------------------------------------------
 idu.est <- bootstrap.estimates(## this describes the sampling design of the
                                ## survey; here, the PSUs are given by the
                                ## variable cluster, and the strata are given
@@ -124,13 +107,11 @@ idu.est <- bootstrap.estimates(## this describes the sampling design of the
                                y.vals="idu",
                                missing="complete.obs")
 
-
 ## ------------------------------------------------------------------------
 ## combine the estimates together in one data frame
 ## (bootstrap.estimates gives us a list)
 all.idu.estimates <- ldply(idu.est,
                            function(x) { data.frame(estimate=x$estimate) })
-
 
 ## ------------------------------------------------------------------------
 ## look at a histogram of the results
@@ -138,7 +119,6 @@ qplot(all.idu.estimates$estimate, binwidth=50)
 
 ## summarize the results
 summary(all.idu.estimates$estimate)
-
 
 ## ------------------------------------------------------------------------
 example.survey <- add.kp(example.survey, kp.vec, tot.pop.size)
@@ -151,5 +131,4 @@ d.hat.new <- kp.degree.estimator(survey.data=example.survey,
                                  missing="complete.obs")
 
 summary(d.hat.new)
-
 
