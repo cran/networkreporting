@@ -1,13 +1,13 @@
-f1fcfccc76202b2c81a5641a1fd2cbe9 *DESCRIPTION
+82c21ddf4fb5536666016677c2152645 *DESCRIPTION
 1a93351c5c8b54907691ac6a9bbd442e *LICENSE
 838922d252895bc96a44846ef5cd2cdb *NAMESPACE
-fd6694fc2875f8dda1a2b01148242d94 *NEWS
+198d988b169231752630f2e4322dc205 *NEWS
 771c4b4f84a5189cac97f70bd733662c *R/RcppExports.R
 5359e764d18728fb85d270598e0e9db8 *R/data.R
 422bb2ca16b40953cdb451cf92ddce46 *R/helper_functions.r
 a876f096f25d95fc7d4f74b045fe131f *R/indirect_sampling.r
 a8cf592eb74827f2f8e2b4fe21763333 *R/known_population.r
-a055a13971ab897a5dd9a6c8883c81fa *R/network_survival.r
+c6e75e860fd25b47a21405562d9b37dd *R/network_survival.r
 7a9ef2336300d849bfd37c53feb7f46a *R/networkreporting_package.r
 d68a456e34628902f23a73c2eb752642 *R/rds.r
 7ea8a494fdd45c96b24755a28f55ae9e *R/report_aggregator.r
@@ -58,7 +58,7 @@ a20b5eadbd7fe5a433cde7be0c49bb90 *man/topcode.data.Rd
 287fd39ad06828ef34d9f3cffdbc72c4 *man/topcode.var.Rd
 db9b55e7023579d91495efdcfcbf51a0 *man/total.degree.estimator.Rd
 edfb063e6b5e6469485f1337afb16f50 *tests/test_all.R
-9af7509aeceebeda6369222f63ba0951 *tests/testthat/test_estimators.R
+c6321ff51da52c06725c204b9ca525ab *tests/testthat/test_estimators.R
 f73dd0abdf107c8fa14a7ddf3b1b2bc1 *tests/testthat/test_kp.R
 de4c64a925440a40516cf88fc5eacacb *tests/testthat/test_variance.R
 62cd1a6d7e7bfd6e989c8aeed39d5349 *tests/testthat/toynetworks.RData
